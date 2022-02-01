@@ -1,0 +1,2 @@
+create-project --prefer-dist yiisoft/yii2-app-advanced yii-application
+
