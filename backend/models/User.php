@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models;
+namespace backend\models;
 
 use Yii;
 
@@ -20,6 +20,8 @@ use Yii;
  */
 class User extends \yii\db\ActiveRecord 
 {
+    public $password;
+
     /**
      * {@inheritdoc}
      */
@@ -34,15 +36,21 @@ class User extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['username', 'auth_key', 'password_hash', 'email', 'created_at', 'updated_at'], 'required'],
+            [['username', 'email'], 'required'],
             [['status', 'created_at', 'updated_at'], 'default', 'value' => null],
             [['status', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'password_reset_token', 'email'], 'string', 'max' => 50],
+            [['username', 'password_hash', 'password_reset_token', 'email', 'verification_token'], 'string', 'max' => 255],
             [['auth_key'], 'string', 'max' => 32],
-            [['password_hash', 'verification_token'], 'string', 'max' => 255],
             [['email'], 'unique'],
             [['password_reset_token'], 'unique'],
-            [['username'], 'unique'],
+            // [['username'], 'unique'],
+            ['password', 'required'],
+            ['password', 'string', 'min' => 8],
+            
+            ['username', 'trim'],
+            ['username', 'required'],
+            ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This username has already been taken.'],
+            ['username', 'string', 'min' => 8, 'max' => 8],
         ];
     }
 
@@ -63,5 +71,38 @@ class User extends \yii\db\ActiveRecord
             'updated_at' => Yii::t('app', 'Updated At'),
             'verification_token' => Yii::t('app', 'Verification Token'),
         ];
+    }
+
+    public function  signup() {
+
+        if (!$this->validate()) {
+            return null;
+        }
+
+        if($this->id != null){
+            $user = UserCommon::find()->where(['id'=>$this->id])->one();
+            if($this->password != null && $this->password != '' ){
+            $user->setPassword($this->password);
+            }
+        }else{
+            $user = new UserCommon();
+            $user->setPassword($this->password);
+        }
+        
+        $user->username = $this->username;
+        $user->email = $this->email;
+        $user->status = $this->status;
+       
+        if($this->auth_key == null){
+           $user->generateAuthKey();
+        }
+        if(!$user->save()){
+             $this->addErrors($user->getErrors());
+             return false;  
+        }
+
+       return true;
+        
+        
     }
 }

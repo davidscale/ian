@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\SingUpForm;
 use common\models\User;
 use common\models\UserSearch;
 use yii\data\ActiveDataProvider;
@@ -73,6 +74,7 @@ class UserController extends Controller
      */
     public function actionCreate()
     {
+        
         $model = new SingUpForm();
 
         if ($this->request->isPost) {
@@ -80,6 +82,7 @@ class UserController extends Controller
             if ($model->load($this->request->post())) {
                 
                 $model->signup();
+               
             }
         } 
 
