@@ -50,6 +50,19 @@ return [
             'rules' => [
             ],
         ],
+        'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
+            'viewPath' => '@common/mail',
+            'useFileTransport' => false,
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'host' => 'smtp.gmail.com',
+                'username' => 'arm.group.utn@gmail.com',
+                'password' => 'pmzaxjfrkoaxihbf',
+                'port' => '587',
+                'encryption' => 'tls',
+            ],
+        ],
         'i18n' => [
             'translations' => [
                 'yii2mod.rbac' => [

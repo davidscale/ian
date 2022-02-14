@@ -60,7 +60,7 @@ class SingUpForm extends Model
         $user->status = 9;
         $user->created_at = strtotime('today');
         $user->updated_at = strtotime('today');
-        
+
         return $user->save() && $this->sendEmail($user);
     }
 
@@ -77,7 +77,7 @@ class SingUpForm extends Model
                 ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
                 ['user' => $user]
             )
-            ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
+            ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name . ' robot'])
             ->setTo($this->email)
             ->setSubject('Account registration at ' . Yii::$app->name)
             ->send();
